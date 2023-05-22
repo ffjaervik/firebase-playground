@@ -8,6 +8,7 @@ import {
   setDoc,
   doc,
   Timestamp,
+  updateDoc,
 } from "firebase/firestore";
 import firebaseConfig from "../dbConfig";
 import { useState } from "react";
@@ -23,7 +24,8 @@ function App() {
   const updateUser = async () => {
     try {
       const docRef = await addDoc(collection(db, "users"), {
-        author: author,
+        name: "Pedro Pascal",
+        age: 45,
       });
       console.log("Document written with ID: ", docRef.id);
     } catch (e) {
@@ -31,7 +33,7 @@ function App() {
     }
   };
 
-  // Add a new document in collection "cities"
+  // Add a new document in collection "cities" & document id "BJ"
   async function addCity() {
     const cityRef = doc(db, "cities", "BJ");
     setDoc(
@@ -40,6 +42,8 @@ function App() {
       { merge: true }
     );
   }
+
+  //WRITE DATA
   async function addTestData() {
     const docData = {
       stringExample: "Hello world!",
@@ -55,10 +59,21 @@ function App() {
         },
       },
     };
-    const dataRef = doc(db,"data","one")
+    const dataRef = doc(db, "data", "one");
     await setDoc(dataRef, docData);
   }
 
+  //UPDATE DATA
+  async function changeTestData() {
+    const dataRef = doc(db, "data", "one");
+    await updateDoc(dataRef, {
+      stringExample: "Goodbye Moon!",
+      booleanExample: false,
+      arrayExample: [9, false, "Goodbye"],
+    });
+  }
+
+  //READ DATA
   async function getDbData() {
     const querySnapshot = await getDocs(collection(db, "users"));
     querySnapshot.forEach((doc) => {
@@ -75,6 +90,7 @@ function App() {
       <button onClick={getDbData}>Get DB Data</button>
       <button onClick={addCity}>Add City</button>
       <button onClick={addTestData}>Add Test Data</button>
+      <button onClick={changeTestData}>Change Test Data</button>
     </>
   );
 }
